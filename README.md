@@ -23,5 +23,8 @@ telecommunications and measurement systems.
 - python/  Verification, modelling, and plotting scripts
 - docs/    Notes, diagrams, and design decisions
 
-## Current Status
-Early development: architecture definition and foundational setup.
+## UART Output Note
+The Tang Nano 4K does not include an onboard USB-UART bridge.
+UART TX is verified in simulation. Hardware UART output requires
+an external USB-UART adapter connected to a GPIO pin.
+
