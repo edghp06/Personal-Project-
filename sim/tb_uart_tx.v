@@ -10,6 +10,21 @@ module tb_uart_tx;
     wire tx;
     wire busy;
 
+    // Clock: 50 MHz (arbitrary for simulation)
+    always #10 clk = ~clk;
+
+    // Baud tick generator (every 16 clocks)
+    reg [3:0] baud_cnt = 0;
+    always @(posedge clk) begin
+        if (baud_cnt == 15) begin
+            baud_cnt <= 0;
+            clk_en   <= 1;
+        end else begin
+            baud_cnt <= baud_cnt + 1;
+            clk_en   <= 0;
+        end
+    end
+
     uart_tx dut (
         .clk(clk),
         .clk_en(clk_en),
@@ -19,45 +34,23 @@ module tb_uart_tx;
         .busy(busy)
     );
 
-    // 50 MHz system clock (20 ns period)
-    always #10 clk = ~clk;
-
-    // Fake baud tick: one pulse = one UART bit
-    task baud_tick;
-        begin
-            clk_en = 1'b1;
-            #20;
-            clk_en = 1'b0;
-            #980;
-        end
-    endtask
-
     initial begin
-        // Generate waveform file
-        $dumpfile("uart_tx.vcd");
+        $dumpfile("uart_tx_sim.vcd");
         $dumpvars(0, tb_uart_tx);
 
-        // Wait before starting
-        #200;
-
-        // Transmit 0x55 (01010101)
+        #100;
         tx_data  = 8'h55;
-        tx_start = 1'b1;
+        tx_start = 1;
         #20;
-        tx_start = 1'b0;
+        tx_start = 0;
 
-        repeat (12) baud_tick();
-
-        // Transmit ASCII 'A' (0x41)
-        #2000;
-        tx_data  = 8'h41;
-        tx_start = 1'b1;
+        #3000;
+        tx_data  = 8'hA3;
+        tx_start = 1;
         #20;
-        tx_start = 1'b0;
+        tx_start = 0;
 
-        repeat (12) baud_tick();
-
-        #2000;
+        #5000;
         $finish;
     end
 
