@@ -1,31 +1,89 @@
-# UART Transmitter
+# UART Interface
 
-This document describes the UART transmit (TX) module implemented as part
-of the FPGA signal processing project.
+## Purpose
+The UART interface provides a simple control and observability channel between a PC and the FPGA.
+It is used to read internal state during development and to control future subsystems such as
+sample capture and FFT processing.
 
-The design follows a clock-enable driven architecture to avoid introducing
-multiple clock domains and to ensure deterministic timing.
+All functionality is verified in simulation before hardware use.
 
-## Design Overview
+---
 
-- 8N1 UART format (1 start bit, 8 data bits, 1 stop bit)
-- LSB-first data transmission
-- Idle-high TX line
-- Busy flag to prevent overlapping transmissions
-- Baud timing controlled externally via a clock-enable pulse
+## Frame Format
 
-## Simulation Verification
+### Request frame (PC → FPGA)
+Each request is a fixed-length 6-byte frame:
 
-The UART transmitter was verified in simulation using a dedicated testbench
-that generates a baud-rate clock-enable signal.
+| Byte | Name | Description |
+|-----:|------|-------------|
+| 0 | SOF | Start of frame (`0xA5`) |
+| 1 | CMD | Command |
+| 2 | ADDR | Register address |
+| 3 | D0 | Data low byte |
+| 4 | D1 | Data high byte |
+| 5 | CHK | XOR checksum of bytes 0–4 |
 
-Known test values were transmitted to validate correct operation.
+---
 
-The simulation confirms:
-- idle-high TX line
-- correct start bit assertion
-- 8 data bits transmitted LSB-first
-- correct stop bit
-- busy flag asserted for the full frame duration
+### Response frame (FPGA → PC)
+Each response is also a fixed-length 6-byte frame:
 
-![UART TX simulation waveform](uart_tx_sim.png)
+| Byte | Name | Description |
+|-----:|------|-------------|
+| 0 | SOF | Start of response (`0x5A`) |
+| 1 | STATUS | Response status |
+| 2 | ADDR | Address echo |
+| 3 | D0 | Data low byte |
+| 4 | D1 | Data high byte |
+| 5 | CHK | XOR checksum of bytes 0–4 |
+
+---
+
+## Commands
+
+| Command | Value | Description |
+|--------:|-------|-------------|
+| PING | `0x03` | Check link and return VERSION |
+| READ | `0x02` | Read register at ADDR |
+
+---
+
+## Status Codes
+
+| Status | Meaning |
+|-------:|---------|
+| `0x00` | OK |
+| `0xE1` | Bad start-of-frame |
+| `0xE2` | Bad checksum |
+| `0xE3` | Invalid command |
+| `0xE4` | Invalid address |
+
+---
+
+## Register Map
+
+All registers are 16-bit and read-only unless stated otherwise.
+
+| Address | Name | Access | Description |
+|--------:|------|--------|-------------|
+| `0x00` | ID | RO | Design identifier |
+| `0x01` | VERSION | RO | Design version |
+| `0x02` | STATUS | RO | Bit0 = error seen, Bit1 = last command valid |
+| `0x03` | COUNTER_LO | RO | Cycle counter bits `[15:0]` |
+| `0x04` | COUNTER_HI | RO | Cycle counter bits `[31:16]` |
+
+The cycle counter is a free-running 32-bit counter that increments every clock cycle.
+
+---
+
+## Verification
+The UART interface and register readback were verified in simulation using GTKWave.
+Simulation confirmed:
+- correct frame parsing
+- correct response formatting
+- correct error detection
+- correct counter readback with increasing values between reads
+
+## Notes
+The UART interface is intended as the primary control and debug mechanism for future subsystems,
+including sample buffers, FFT control, and multichannel expansion.
