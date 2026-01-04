@@ -3,19 +3,26 @@
 
 module tb_uart_cmd;
 
+    // -----------------------------
+    // Clock
+    // -----------------------------
     reg clk = 0;
     always #5 clk = ~clk; // 100 MHz
 
-    reg rst;
+    // -----------------------------
+    // DUT signals
+    // -----------------------------
+    reg        rst;
+    reg        rx_valid;
+    reg [7:0]  rx_data;
 
-    reg       rx_valid;
-    reg [7:0] rx_data;
-
-    wire      tx_valid;
+    wire       tx_valid;
     wire [7:0] tx_data;
-    reg       tx_ready;
+    reg        tx_ready;
 
-    // DUT (ONLY instance, no extra modules)
+    // -----------------------------
+    // DUT instance
+    // -----------------------------
     uart_cmd dut (
         .clk(clk),
         .rst(rst),
@@ -26,7 +33,9 @@ module tb_uart_cmd;
         .tx_ready(tx_ready)
     );
 
-    // checksum helper (TB ONLY, NOT a module)
+    // -----------------------------
+    // Helpers
+    // -----------------------------
     function [7:0] chk;
         input [7:0] a,b,c,d,e;
         begin
@@ -38,10 +47,10 @@ module tb_uart_cmd;
         input [7:0] b;
         begin
             @(posedge clk);
-            rx_valid <= 1;
+            rx_valid <= 1'b1;
             rx_data  <= b;
             @(posedge clk);
-            rx_valid <= 0;
+            rx_valid <= 1'b0;
             rx_data  <= 8'h00;
         end
     endtask
@@ -58,33 +67,45 @@ module tb_uart_cmd;
         end
     endtask
 
+    // -----------------------------
+    // Test sequence
+    // -----------------------------
     initial begin
+        // Dump everything (TB + DUT)
         $dumpfile("tb_uart_cmd.vcd");
         $dumpvars(0, tb_uart_cmd);
 
-        rst = 1;
-        rx_valid = 0;
-        rx_data  = 0;
-        tx_ready = 1;
+        // Init
+        rst       = 1'b1;
+        rx_valid = 1'b0;
+        rx_data  = 8'h00;
+        tx_ready = 1'b1;
 
+        // Reset
         repeat (5) @(posedge clk);
-        rst = 0;
+        rst = 1'b0;
+
+        // -------------------------
+        // Day 16 tests
+        // -------------------------
 
         // PING
         send_frame(8'hA5, 8'h03, 8'h00, 8'h00, 8'h00);
 
-        // READ VERSION (0x01)
-        send_frame(8'hA5, 8'h02, 8'h01, 8'h00, 8'h00);
+        // Read COUNTER_LO (0x03)
+        #100;
+        send_frame(8'hA5, 8'h02, 8'h03, 8'h00, 8'h00);
 
-        // BAD CHECKSUM
-        send_byte(8'hA5);
-        send_byte(8'h02);
-        send_byte(8'h01);
-        send_byte(8'h00);
-        send_byte(8'h00);
-        send_byte(8'hFF);
+        // Read COUNTER_HI (0x04)
+        #100;
+        send_frame(8'hA5, 8'h02, 8'h04, 8'h00, 8'h00);
 
-        #200;
+        // Wait, then read COUNTER_LO again (should be larger)
+        #500;
+        send_frame(8'hA5, 8'h02, 8'h03, 8'h00, 8'h00);
+
+        // End
+        #500;
         $finish;
     end
 
