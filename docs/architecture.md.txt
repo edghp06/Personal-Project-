@@ -17,6 +17,13 @@ Analog Input
 
 ---------------------------------------------------------------
 
+Fixed-Point Representation
+All DSP computations use signed Q1.15 fixed-point format. Input samples are normalised to ±1.
+Intermediate multiplications produce Q2.30 results, which are scaled back to Q1.15 by right-shifting 15 bits.
+FFT stages include per-stage scaling to prevent overflow while maintaining numerical stability.
+
+---------------------------------------------------------------
+
 ## Functional Blocks
 
 ### ADC Interface
