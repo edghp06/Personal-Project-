@@ -1,0 +1,72 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 12;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2009.vpi";
+S_00000275f1de8d90 .scope package, "$unit" "$unit" 2 1;
+ .timescale 0 0;
+S_00000275f1de8f20 .scope module, "tb_fx_mul_q15" "tb_fx_mul_q15" 3 4;
+ .timescale -9 -12;
+v00000275f1e74710_0 .var/s "a_q15", 15 0;
+v00000275f1e747b0_0 .var/s "b_q15", 15 0;
+v00000275f1e74850_0 .net/s "y_q15", 15 0, L_00000275f1e752e0;  1 drivers
+S_00000275f1e424d0 .scope module, "dut" "fx_mul_q15" 3 11, 4 5 0, S_00000275f1de8f20;
+ .timescale 0 0;
+    .port_info 0 /INPUT 16 "a_q15";
+    .port_info 1 /INPUT 16 "b_q15";
+    .port_info 2 /OUTPUT 16 "y_q15";
+v00000275f1e42ca0_0 .net/s *"_ivl_0", 31 0, L_00000275f1e75100;  1 drivers
+v00000275f1deb330_0 .net/s *"_ivl_2", 31 0, L_00000275f1e751a0;  1 drivers
+v00000275f1e42660_0 .net/s "a_q15", 15 0, v00000275f1e74710_0;  1 drivers
+v00000275f1e42700_0 .net/s "b_q15", 15 0, v00000275f1e747b0_0;  1 drivers
+v00000275f1e427a0_0 .net/s "prod_q30", 31 0, L_00000275f1e75240;  1 drivers
+v00000275f1e42840_0 .net/s "y_q15", 15 0, L_00000275f1e752e0;  alias, 1 drivers
+L_00000275f1e75100 .extend/s 32, v00000275f1e74710_0;
+L_00000275f1e751a0 .extend/s 32, v00000275f1e747b0_0;
+L_00000275f1e75240 .arith/mult 32, L_00000275f1e75100, L_00000275f1e751a0;
+L_00000275f1e752e0 .part L_00000275f1e75240, 15, 16;
+    .scope S_00000275f1de8f20;
+T_0 ;
+    %vpi_call/w 3 18 "$dumpfile", "tb_fx_mul_q15.vcd" {0 0 0};
+    %vpi_call/w 3 19 "$dumpvars", 32'sb00000000000000000000000000000000, S_00000275f1de8f20 {0 0 0};
+    %pushi/vec4 16384, 0, 16;
+    %store/vec4 v00000275f1e74710_0, 0, 16;
+    %pushi/vec4 16384, 0, 16;
+    %store/vec4 v00000275f1e747b0_0, 0, 16;
+    %delay 10000, 0;
+    %pushi/vec4 32767, 0, 16;
+    %store/vec4 v00000275f1e74710_0, 0, 16;
+    %pushi/vec4 16384, 0, 16;
+    %store/vec4 v00000275f1e747b0_0, 0, 16;
+    %delay 10000, 0;
+    %pushi/vec4 49152, 0, 16;
+    %store/vec4 v00000275f1e74710_0, 0, 16;
+    %pushi/vec4 16384, 0, 16;
+    %store/vec4 v00000275f1e747b0_0, 0, 16;
+    %delay 10000, 0;
+    %pushi/vec4 49152, 0, 16;
+    %store/vec4 v00000275f1e74710_0, 0, 16;
+    %pushi/vec4 49152, 0, 16;
+    %store/vec4 v00000275f1e747b0_0, 0, 16;
+    %delay 10000, 0;
+    %pushi/vec4 32767, 0, 16;
+    %store/vec4 v00000275f1e74710_0, 0, 16;
+    %pushi/vec4 32767, 0, 16;
+    %store/vec4 v00000275f1e747b0_0, 0, 16;
+    %delay 10000, 0;
+    %delay 20000, 0;
+    %vpi_call/w 3 57 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 5;
+    "N/A";
+    "<interactive>";
+    "-";
+    "sim\tb_fx_mul_q15.v";
+    "rtl\fx_mul_q15.v";
