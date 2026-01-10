@@ -28,3 +28,4 @@ The Tang Nano 4K does not include an onboard USB-UART bridge.
 UART TX is verified in simulation. Hardware UART output requires
 an external USB-UART adapter connected to a GPIO pin.
 
+A Python Q1.15 reference model is used as the golden reference for verifying fixed-point DSP blocks prior to RTL integration
