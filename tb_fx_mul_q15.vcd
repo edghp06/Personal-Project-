@@ -1,5 +1,5 @@
 $date
-	Wed Jan 07 15:09:17 2026
+	Tue Feb 03 16:26:58 2026
 $end
 $version
 	Icarus Verilog
@@ -18,12 +18,298 @@ $var wire 16 & y_q15 [15:0] $end
 $var wire 32 ' prod_q30 [31:0] $end
 $upscope $end
 $upscope $end
+$scope module tb_sample_buffer $end
+$var wire 16 ( sample_out [15:0] $end
+$var reg 1 ) clk $end
+$var reg 8 * read_addr [7:0] $end
+$var reg 1 + rst $end
+$var reg 16 , sample_in [15:0] $end
+$var reg 1 - sample_valid $end
+$var integer 32 . i [31:0] $end
+$scope module dut $end
+$var wire 1 ) clk $end
+$var wire 8 / read_addr [7:0] $end
+$var wire 1 + rst $end
+$var wire 16 0 sample_in [15:0] $end
+$var wire 1 - sample_valid $end
+$var wire 16 1 sample_out [15:0] $end
+$var reg 8 2 write_ptr [7:0] $end
+$scope module ram $end
+$var wire 1 ) clk $end
+$var wire 8 3 raddr [7:0] $end
+$var wire 8 4 waddr [7:0] $end
+$var wire 16 5 wdata [15:0] $end
+$var wire 1 - we $end
+$var reg 16 6 rdata [15:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module tb_sample_ram $end
+$var wire 16 7 rdata [15:0] $end
+$var reg 1 8 clk $end
+$var reg 8 9 raddr [7:0] $end
+$var reg 8 : waddr [7:0] $end
+$var reg 16 ; wdata [15:0] $end
+$var reg 1 < we $end
+$scope module dut $end
+$var wire 1 8 clk $end
+$var wire 8 = raddr [7:0] $end
+$var wire 8 > waddr [7:0] $end
+$var wire 16 ? wdata [15:0] $end
+$var wire 1 < we $end
+$var reg 16 @ rdata [15:0] $end
+$upscope $end
+$upscope $end
+$scope module tb_uart_cmd $end
+$var wire 1 A tx_valid $end
+$var wire 8 B tx_data [7:0] $end
+$var reg 1 C clk $end
+$var reg 1 D rst $end
+$var reg 8 E rx_data [7:0] $end
+$var reg 1 F rx_valid $end
+$var reg 1 G tx_ready $end
+$scope function chk $end
+$var reg 8 H a [7:0] $end
+$var reg 8 I b [7:0] $end
+$var reg 8 J c [7:0] $end
+$var reg 8 K d [7:0] $end
+$var reg 8 L e [7:0] $end
+$upscope $end
+$scope module dut $end
+$var wire 1 C clk $end
+$var wire 1 D rst $end
+$var wire 8 M rx_data [7:0] $end
+$var wire 1 F rx_valid $end
+$var wire 16 N sample_in [15:0] $end
+$var wire 1 G tx_ready $end
+$var parameter 8 O CMD_PING $end
+$var parameter 8 P CMD_RD $end
+$var parameter 8 Q CMD_STREAM $end
+$var parameter 3 R S_EOF $end
+$var parameter 3 S S_HI $end
+$var parameter 3 T S_IDLE $end
+$var parameter 3 U S_LO $end
+$var parameter 3 V S_NEXT $end
+$var parameter 3 W S_SOF $end
+$var reg 8 X b0 [7:0] $end
+$var reg 8 Y b1 [7:0] $end
+$var reg 8 Z b2 [7:0] $end
+$var reg 8 [ b3 [7:0] $end
+$var reg 8 \ b4 [7:0] $end
+$var reg 8 ] b5 [7:0] $end
+$var reg 1 ^ resp_pending $end
+$var reg 3 _ rx_count [2:0] $end
+$var reg 1 ` stream_active $end
+$var reg 8 a stream_rd_ptr [7:0] $end
+$var reg 3 b stream_state [2:0] $end
+$var reg 3 c tx_count [2:0] $end
+$var reg 8 d tx_data [7:0] $end
+$var reg 1 A tx_valid $end
+$upscope $end
+$scope task send_byte $end
+$var reg 8 e b [7:0] $end
+$upscope $end
+$scope task send_frame $end
+$var reg 8 f addr [7:0] $end
+$var reg 8 g cmd [7:0] $end
+$var reg 8 h d0 [7:0] $end
+$var reg 8 i d1 [7:0] $end
+$var reg 8 j sof [7:0] $end
+$upscope $end
+$upscope $end
+$scope module tb_uart_echo $end
+$var wire 1 k tx $end
+$var reg 4 l baud_cnt [3:0] $end
+$var reg 1 m clk $end
+$var reg 1 n clk_en $end
+$var reg 1 o rx $end
+$scope module dut $end
+$var wire 1 m clk $end
+$var wire 1 n clk_en $end
+$var wire 1 o rx $end
+$var wire 1 p tx_busy $end
+$var wire 1 k tx $end
+$var wire 1 q rx_valid $end
+$var wire 8 r rx_data [7:0] $end
+$scope module uart_rx_inst $end
+$var wire 1 m clk $end
+$var wire 1 n clk_en $end
+$var wire 1 o rx $end
+$var reg 4 s bit_index [3:0] $end
+$var reg 1 t busy $end
+$var reg 8 u rx_data [7:0] $end
+$var reg 1 q rx_valid $end
+$var reg 8 v shift_reg [7:0] $end
+$upscope $end
+$scope module uart_tx_inst $end
+$var wire 1 m clk $end
+$var wire 1 n clk_en $end
+$var wire 8 w tx_data [7:0] $end
+$var wire 1 q tx_start $end
+$var reg 4 x bit_index [3:0] $end
+$var reg 1 p busy $end
+$var reg 10 y shift_reg [9:0] $end
+$var reg 1 k tx $end
+$upscope $end
+$upscope $end
+$scope task send_byte $end
+$var reg 8 z data [7:0] $end
+$var integer 32 { i [31:0] $end
+$upscope $end
+$upscope $end
+$scope module tb_uart_rx $end
+$var wire 1 | rx_valid $end
+$var wire 8 } rx_data [7:0] $end
+$var reg 4 ~ baud_cnt [3:0] $end
+$var reg 1 !" clk $end
+$var reg 1 "" clk_en $end
+$var reg 1 #" rx $end
+$scope module dut $end
+$var wire 1 !" clk $end
+$var wire 1 "" clk_en $end
+$var wire 1 #" rx $end
+$var reg 4 $" bit_index [3:0] $end
+$var reg 1 %" busy $end
+$var reg 8 &" rx_data [7:0] $end
+$var reg 1 | rx_valid $end
+$var reg 8 '" shift_reg [7:0] $end
+$upscope $end
+$scope task send_byte $end
+$var reg 8 (" data [7:0] $end
+$var integer 32 )" i [31:0] $end
+$upscope $end
+$upscope $end
+$scope module tb_uart_tx $end
+$var wire 1 *" tx $end
+$var wire 1 +" busy $end
+$var reg 4 ," baud_cnt [3:0] $end
+$var reg 1 -" clk $end
+$var reg 1 ." clk_en $end
+$var reg 8 /" tx_data [7:0] $end
+$var reg 1 0" tx_start $end
+$scope module dut $end
+$var wire 1 -" clk $end
+$var wire 1 ." clk_en $end
+$var wire 8 1" tx_data [7:0] $end
+$var wire 1 0" tx_start $end
+$var reg 4 2" bit_index [3:0] $end
+$var reg 1 +" busy $end
+$var reg 10 3" shift_reg [9:0] $end
+$var reg 1 *" tx $end
+$upscope $end
+$upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
+b1 W
+b100 V
+b10 U
+b0 T
+b11 S
+b101 R
+b100 Q
+b10 P
+b11 O
 $end
 #0
 $dumpvars
+b1111111111 3"
+b0 2"
+b0 1"
+00"
+b0 /"
+0."
+0-"
+b0 ,"
+0+"
+1*"
+bx )"
+bx ("
+b0 '"
+bx &"
+0%"
+b0 $"
+1#"
+0""
+0!"
+b0 ~
+bx }
+x|
+bx {
+bx z
+b1111111111 y
+b0 x
+bx w
+b0 v
+bx u
+0t
+b0 s
+bx r
+xq
+0p
+1o
+0n
+0m
+b0 l
+1k
+bx j
+bx i
+bx h
+bx g
+bx f
+bx e
+bx d
+bx c
+bx b
+bx a
+x`
+bx _
+x^
+bx ]
+bx \
+bx [
+bx Z
+bx Y
+bx X
+bz N
+b0 M
+bx L
+bx K
+bx J
+bx I
+bx H
+1G
+0F
+b0 E
+1D
+0C
+bx B
+xA
+bx @
+b0 ?
+b0 >
+b0 =
+0<
+b0 ;
+b0 :
+b0 9
+08
+bx 7
+bx 6
+b0 5
+bx 4
+b0 3
+bx 2
+bx 1
+b0 0
+b0 /
+bx .
+0-
+b0 ,
+1+
+b0 *
+0)
+bx (
 b10000000000000000000000000000 '
 b10000000000000 &
 b100000000000000 %
@@ -32,30 +318,182 @@ b100000000000000 #
 b100000000000000 "
 b10000000000000 !
 $end
+#5000
+b0 a
+b0 b
+0`
+b0 B
+b0 d
+0A
+0^
+b0 c
+b0 _
+b0 2
+b0 4
+b1001000110100 ;
+b1001000110100 ?
+1<
+1C
+18
+1)
 #10000
+b1 ,"
+0|
+b1 ~
+0q
+b1 l
 b11111111111111 !
 b11111111111111 &
+0C
+08
+0)
+1-"
+1!"
+1m
 b11111111111111100000000000000 '
 b111111111111111 "
 b111111111111111 $
+#15000
+b1001000110100 7
+b1001000110100 @
+b101011001111000 ;
+b101011001111000 ?
+b1 :
+b1 >
+1C
+18
+1)
 #20000
 b1110000000000000 !
 b1110000000000000 &
+0C
+08
+0)
+0-"
+0!"
+0m
 b11110000000000000000000000000000 '
 b1100000000000000 "
 b1100000000000000 $
+#25000
+0<
+b0 .
+0+
+1C
+18
+1)
 #30000
+b10 ,"
+b10 ~
+b10 l
 b10000000000000 !
 b10000000000000 &
+0C
+08
+0)
+1-"
+1!"
+1m
 b10000000000000000000000000000 '
 b1100000000000000 #
 b1100000000000000 %
+#35000
+b1 .
+1-
+1C
+18
+1)
 #40000
 b111111111111110 !
 b111111111111110 &
+0C
+08
+0)
+0-"
+0!"
+0m
 b111111111111111 #
 b111111111111111 %
 b111111111111110000000000000001 '
 b111111111111111 "
 b111111111111111 $
+#45000
+bx 7
+bx @
+b1 2
+b1 4
+b10100101 e
+b0 i
+b0 h
+b0 f
+b11 g
+b10100101 j
+0D
+b1 9
+b1 =
+b10 .
+b1 ,
+b1 0
+b1 5
+1C
+18
+1)
+#50000
+b11 ,"
+b11 ~
+b11 l
+0C
+08
+0)
+1-"
+1!"
+1m
+#55000
+b10100101 E
+b10100101 M
+1F
+b10 2
+b10 4
+b1 (
+b1 1
+b1 6
+b11 .
+b10 ,
+b10 0
+b10 5
+1C
+18
+1)
+#60000
+0C
+08
+0)
+0-"
+0!"
+0m
+#65000
+b0 E
+b0 M
+0F
+b1 _
+b10100101 X
+b11 2
+b11 4
+b11 e
+b100 .
+b11 ,
+b11 0
+b11 5
+1C
+18
+1)
 #70000
+b100 ,"
+b100 ~
+b100 l
+0C
+08
+0)
+1-"
+1!"
+1m

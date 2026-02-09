@@ -1,54 +1,120 @@
-module top (
-    input  wire clk,        // 27 MHz system clock
-    output wire uart_tx      // UART TX output
-);
+module top_fpga_dsp ();
 
-    // -------------------------------------------------
-    // Clock enable for UART baud rate
-    // 27 MHz / 115200 ≈ 234
-    // -------------------------------------------------
-    localparam integer BAUD_DIV = 234;
+    // clock for simulation only
+    reg clk = 0;
+    always #50 clk = ~clk; // 10 MHz
 
-    reg [7:0] baud_cnt = 0;
-    reg clk_en = 0;
+    reg rst = 1;
 
+    // UART wires
+    reg  uart_rx_i = 1'b1;
+    wire uart_tx_o;
+
+    // Sample writer (simulation)
+    reg        sample_wr_en = 0;
+    reg [15:0] sample_wr_data = 16'd0;
+
+    // Free running counter
+    reg [31:0] free_counter;
     always @(posedge clk) begin
-        if (baud_cnt == BAUD_DIV - 1) begin
-            baud_cnt <= 0;
-            clk_en   <= 1;
-        end else begin
-            baud_cnt <= baud_cnt + 1;
-            clk_en   <= 0;
-        end
+        if (rst)
+            free_counter <= 0;
+        else
+            free_counter <= free_counter + 1;
     end
 
-    // -------------------------------------------------
-    // Periodic transmit trigger
-    // -------------------------------------------------
-    reg [23:0] send_cnt = 0;
-    reg tx_start = 0;
+    // UART RX
+    wire       rx_valid;
+    wire [7:0] rx_data;
 
-    always @(posedge clk) begin
-        tx_start <= 0;
-        send_cnt <= send_cnt + 1;
-
-        // send roughly every 0.2s
-        if (send_cnt == 24'd5_000_000) begin
-            send_cnt <= 0;
-            tx_start <= 1;
-        end
-    end
-
-    // -------------------------------------------------
-    // UART transmitter
-    // -------------------------------------------------
-    uart_tx uart_tx_inst (
-        .clk      (clk),
-        .clk_en   (clk_en),
-        .tx_start (tx_start),
-        .tx_data  (8'h55),     // 'U'
-        .tx       (uart_tx),
-        .busy     ()
+    uart_rx u_rx (
+        .clk(clk),
+        .rst(rst),
+        .rx(uart_rx_i),
+        .rx_valid(rx_valid),
+        .rx_data(rx_data)
     );
+
+    // Sample buffer
+    wire [7:0]  stream_rd_addr;
+    wire [15:0] stream_sample;
+
+    sample_buffer u_buf (
+        .clk(clk),
+        .rst(rst),
+        .sample_wr_en(sample_wr_en),
+        .sample_wr_data(sample_wr_data),
+        .rd_addr(stream_rd_addr),
+        .rd_data(stream_sample)
+    );
+
+    // UART TX
+    wire       tx_busy;
+    wire       tx_start;
+    wire [7:0] tx_data;
+
+    uart_tx u_tx (
+        .clk(clk),
+        .rst(rst),
+        .tx_start(tx_start),
+        .tx_data(tx_data),
+        .tx_busy(tx_busy),
+        .tx(uart_tx_o),
+        .tx_done()
+    );
+
+    // Command + streamer
+    uart_cmd u_cmd (
+        .clk(clk),
+        .rst(rst),
+        .rx_valid(rx_valid),
+        .rx_data(rx_data),
+        .tx_busy(tx_busy),
+        .tx_start(tx_start),
+        .tx_data(tx_data),
+        .free_counter(free_counter),
+        .stream_rd_addr(stream_rd_addr),
+        .stream_sample(stream_sample)
+    );
+
+    // ---- SIMULATION SEQUENCE ----
+    integer i;
+    initial begin
+        #500;
+        rst = 0;
+
+        // Fill buffer with ramp
+        for (i = 0; i < 256; i = i + 1) begin
+            @(posedge clk);
+            sample_wr_en   = 1'b1;
+            sample_wr_data = 16'h1000 + i;
+        end
+        sample_wr_en = 0;
+
+        // Send STREAM command over UART
+        send_byte(8'hA5);
+        send_byte(8'h04);
+        send_byte(8'h00);
+        send_byte(8'h00);
+        send_byte(8'h00); // checksum
+
+        #5_000_000;
+        $finish;
+    end
+
+    // UART TX task
+    task send_byte(input [7:0] b);
+        integer k;
+        begin
+            uart_rx_i = 0;
+            #(8680);
+            for (k = 0; k < 8; k = k + 1) begin
+                uart_rx_i = b[k];
+                #(8680);
+            end
+            uart_rx_i = 1;
+            #(8680);
+        end
+    endtask
 
 endmodule
