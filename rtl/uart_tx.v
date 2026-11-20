@@ -1,35 +1,40 @@
 module uart_tx (
     input  wire clk,
-    input  wire rst,
-    input  wire start,
-    input  wire [7:0] data,
-    output reg  busy,
-    output reg  tx
+    input  wire clk_en,        // 1-cycle pulse = baud tick
+    input  wire tx_start,      // pulse high to start sending tx_data
+    input  wire [7:0] tx_data,
+    output reg  tx,            // UART TX line (idle high)
+    output reg  busy
 );
 
-    integer i;
+    reg [3:0] bit_index = 0;
+    reg [9:0] shift_reg = 10'b1111111111;
+
     initial begin
-        tx   = 1;
-        busy = 0;
+        tx   = 1'b1;
+        busy = 1'b0;
     end
 
     always @(posedge clk) begin
-        if (rst) begin
-            tx   <= 1;
-            busy <= 0;
-        end else if (start && !busy) begin
-            busy <= 1;
+        if (!busy) begin
+            tx <= 1'b1; // idle
 
-            // START bit
-            tx <= 0;
+            if (tx_start) begin
+                // Frame: start(0) + data(8 bits LSB first) + stop(1)
+                shift_reg <= {1'b1, tx_data, 1'b0};
+                bit_index <= 0;
+                busy <= 1'b1;
+            end
 
-            // send data bits (very slow, for visibility)
-            for (i = 0; i < 8; i = i + 1)
-                tx <= data[i];
+        end else if (clk_en) begin
+            // On each baud tick, output next bit
+            tx <= shift_reg[0];
+            shift_reg <= {1'b1, shift_reg[9:1]};
+            bit_index <= bit_index + 1;
 
-            // STOP bit
-            tx <= 1;
-            busy <= 0;
+            if (bit_index == 9) begin
+                busy <= 1'b0;
+            end
         end
     end
 

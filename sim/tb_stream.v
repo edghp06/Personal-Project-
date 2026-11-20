@@ -28,13 +28,13 @@ module tb_stream;
     );
 
     initial begin
-        $dumpfile("sim/wave.vcd");
+        $dumpfile("tb_stream.vcd");
         $dumpvars(0, tb_stream);
     end
 
     integer fd;
     initial begin
-        fd = $fopen("sim/stream_bytes.hex", "w");
+        fd = $fopen("stream_bytes.hex", "w");
     end
 
     // ---- simple sample fill ----

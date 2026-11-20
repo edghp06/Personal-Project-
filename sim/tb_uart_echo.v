@@ -48,7 +48,7 @@ module tb_uart_echo;
     endtask
 
     initial begin
-        $dumpfile("uart_echo_sim.vcd");
+        $dumpfile("tb_uart_echo.vcd");
         $dumpvars(0, tb_uart_echo);
 
         #100;

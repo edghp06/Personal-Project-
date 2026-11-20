@@ -35,7 +35,7 @@ module tb_uart_tx;
     );
 
     initial begin
-        $dumpfile("uart_tx_sim.vcd");
+        $dumpfile("tb_uart_tx.vcd");
         $dumpvars(0, tb_uart_tx);
 
         #100;

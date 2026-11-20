@@ -1,1 +1,11 @@
-sim/sanity.exe
+# Simulation outputs
+sim/build/
+*.vcd
+*.vvp
+*.out
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+.venv/
