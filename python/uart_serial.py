@@ -1,52 +1,30 @@
-import serial
+"""Echo test over a USB-UART adapter: send a few bytes, print what comes back.
+
+Usage: python uart_serial.py --port COM3        (or /dev/ttyUSB0)
+"""
+import argparse
 import time
 
-# -----------------------------
-# Serial configuration
-# -----------------------------
-PORT = "COM3"        # Change later (e.g. COM4, /dev/ttyUSB0)
-BAUDRATE = 115200
-TIMEOUT = 1          # seconds
+import serial
 
-# -----------------------------
-# Open serial port
-# -----------------------------
-ser = serial.Serial(
-    port=PORT,
-    baudrate=BAUDRATE,
-    timeout=TIMEOUT
-)
 
-time.sleep(2)  # Allow device reset (important for many boards)
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--port", default="COM3", help="Serial port, e.g. COM3 or /dev/ttyUSB0")
+    ap.add_argument("--baud", type=int, default=115200)
+    args = ap.parse_args()
 
-print(f"Connected to {PORT} at {BAUDRATE} baud")
+    with serial.Serial(port=args.port, baudrate=args.baud, timeout=1) as ser:
+        time.sleep(2)  # allow the board to reset after the port opens
+        print(f"Connected to {args.port} at {args.baud} baud")
 
-# -----------------------------
-# Send and receive bytes
-# -----------------------------
-def send_byte(value):
-    ser.write(bytes([value]))
-    print(f"Sent: 0x{value:02X}")
+        for b in [0x3C, 0xA5, 0x55]:
+            ser.write(bytes([b]))
+            print(f"Sent: 0x{b:02X}")
+            time.sleep(0.1)
+            data = ser.read(1)
+            print(f"Received: 0x{data[0]:02X}" if data else "Received: nothing (timeout)")
 
-def read_byte():
-    data = ser.read(1)
-    if data:
-        value = data[0]
-        print(f"Received: 0x{value:02X}")
-        return value
-    return None
 
-# -----------------------------
-# Echo test loop
-# -----------------------------
-try:
-    test_bytes = [0x3C, 0xA5, 0x55]
-
-    for b in test_bytes:
-        send_byte(b)
-        time.sleep(0.1)
-        read_byte()
-
-finally:
-    ser.close()
-    print("Serial port closed")
+if __name__ == "__main__":
+    main()
