@@ -50,7 +50,7 @@ module tb_uart_rx;
     endtask
 
     initial begin
-    $dumpfile("uart_rx_sim.vcd");
+    $dumpfile("tb_uart_rx.vcd");
     $dumpvars(0, tb_uart_rx);
 
     #100;

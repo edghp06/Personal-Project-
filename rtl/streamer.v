@@ -23,7 +23,10 @@ module streamer (
         end else begin
             tx_start <= 0;
 
-            if (!tx_busy) begin
+            // tx_busy only rises the cycle after tx_start, so also wait
+            // while our own start pulse is still high, or every other
+            // byte is dropped.
+            if (!tx_busy && !tx_start) begin
                 case (state)
                     S_SOF: begin
                         tx_data  <= 8'h55;
